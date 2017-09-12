@@ -65,17 +65,17 @@ function km_rpbt_related_posts_by_taxonomy( $post_id = 0, $taxonomies = 'categor
 	} else {
 		$term_ids_sql = ( isset( $terms[0] ) ) ? 'tt.term_id = ' . $terms[0] : 'tt.term_id = 0';
 	}
-
+	
 	// Add current post ID to exclude.
-	$args['exclude_posts'][] = $post_id;
+	if ( $args['include_self'] == false ){
+		$args['exclude_posts'][] = $post_id;
+	}
 	$args['exclude_posts']   = array_unique( $args['exclude_posts'] );
 
+	if ( count( $args['exclude_posts']) > 0){
 	// Post ids sql.
-	$post_ids_sql = "AND $wpdb->posts.ID";
-	if ( count( $args['exclude_posts'] ) > 1 ) {
+		$post_ids_sql = "AND $wpdb->posts.ID";
 		$post_ids_sql .= ' NOT IN (' . implode( ', ', $args['exclude_posts'] ) . ')';
-	} else {
-		$post_ids_sql .= " != $post_id";
 	}
 
 	// Default to post type post if no post types are found.
